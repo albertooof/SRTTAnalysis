@@ -33,7 +33,7 @@ You can also install the development version of SRTTAnalysis from [GitHub](https
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("yourusername/mypackage")
+devtools::install_github("albertooof/SRTTAnalysis")
 ```
 
 
@@ -155,6 +155,7 @@ Calculate_Skill_Sequence_for_Dataframes(data = random_df_l, format= "Long" ,  nu
 ```
 
 ```{r example12, warning = FALSE}
+
 random_list_w <- cbind(999, (as.data.frame(t(stats::rnorm(500, mean = 1, sd = 0.1)))))
 
 
