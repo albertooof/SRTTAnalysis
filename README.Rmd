@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of SRTTAnalysis is to ...
+This package includes a set of functions to analyse raw reaction time data (e.g., SRTT), calculate performance and plot the results of this analysis 
 
 ## Installation
 
@@ -45,14 +45,14 @@ Basic examples which show you how to run the code and what output to expect:
 library(SRTTAnalysis)
 
 data_wide <- data.frame(id = 999, t(rnorm(500, mean = 1, sd = 0.1)))
-SRTT_analysis(data_wide, format= "Wide")
+head(SRTT_analysis(data_wide, format = "Wide")[, 1:10])
  
 ```
 
 ```{r example1}
 
 data_long <- data.frame(value = c(999, rnorm(500, mean = 1, sd = 0.1)))
-SRTT_analysis(data_long)
+head(SRTT_analysis(data_long, format = "Long")[, 1:10])
 
 ```
 
@@ -62,15 +62,15 @@ ID <- LETTERS[1:10]
 
 dataframe_wide <- data.frame(ID = ID, matrix(stats::rnorm(10 * 500, mean = 1, sd = 0.1), nrow = 10, ncol = 500) )
 
-SRTT_analysis_for_Dataframes(dataframe_wide, format = "Wide", standard_deviations = 3.1)
- 
+head(SRTT_analysis_for_Dataframes(dataframe_wide, format = "Wide")[, 1:10]) 
 ```
 
 
 ```{r example3}
 
 dataframe_long <- as.data.frame(t(dataframe_wide))
-SRTT_analysis_for_Dataframes(dataframe_long, format = "Long" ,running_window_width_percentage = 0.3)
+
+head(SRTT_analysis_for_Dataframes(dataframe_long, format = "Long" ,running_window_width_percentage = 0.3)[, 1:10]) 
 
 ```
 
@@ -107,8 +107,7 @@ for (i in 1:10) {
 
 random_df_w <- data.frame(ID = LETTERS[1:10], random_matrix)
 
-percentage_of_filtered_values_for_Dataframe(random_df_w, format = "Wide", 
-                                            number_of_rounds = 3, rounds_of_equal_length = FALSE, design = c(50 , 180, 50, 50, 300, 50, 50 , 180, 50, 50 , 180, 50))
+percentage_of_filtered_values_for_Dataframe(random_df_w, format = "Wide",number_of_rounds = 3, rounds_of_equal_length = FALSE, design = c(50 , 180, 50, 50, 300, 50, 50 , 180, 50, 50 , 180, 50))
 
 ```
 
@@ -138,9 +137,9 @@ skill
 
 ```{r example10}
 
-random_matrix <- matrix(stats::rnorm(10 * 1200, mean = 1, sd = 0.1), nrow = 10, ncol = 1200)
+random_matrix <- matrix(stats::rnorm(5 * 1200, mean = 1, sd = 0.1), nrow = 5, ncol = 1200)
 
-random_df_w <- data.frame(ID = LETTERS[1:10], random_matrix)
+random_df_w <- data.frame(ID = LETTERS[1:5], random_matrix)
 
 skill_df <- Calculate_Skill_Sequence_for_Dataframes(data = random_df_w, format= "Wide" ,  rounds_of_equal_length = FALSE, design = c(50, 200, 50,  50, 300, 50,  50, 400, 50), span_random = 0.20,  span_training = 0.14, automatically_select_span = TRUE, size_of_trial_window_for_skill_same = TRUE, size_of_trial_window_for_skill_percentage = 0.15 , size_of_trial_window_for_skill_percentage_SEQ = 0.28, size_of_trial_window_for_skill_percentage_RND = 0.50)
 
@@ -155,7 +154,7 @@ Calculate_Skill_Sequence_for_Dataframes(data = random_df_l, format= "Long" ,  nu
 
 ```
 
-```{r example12}
+```{r example12, warning = FALSE}
 random_list_w <- cbind(999, (as.data.frame(t(stats::rnorm(500, mean = 1, sd = 0.1)))))
 
 plot <- plot_data(random_list_w,format = "Wide" , limit_y_axis_min_max = TRUE,  limit_y_axis_lower = 0.5,  limit_y_axis_upper = 1.5,  design = c(50, 200, 50, 50, 100, 50), function_to_fit = "loess", span_loess_fitting = 0.1,   standard_error = FALSE, color_dots = "black",   color_line = "grey",  color_intercept = "grey")
@@ -166,7 +165,7 @@ plot+ggplot2::geom_hline(yintercept =1, col="red")
 
 ```
 
-```{r example13}
+```{r example13, warning = FALSE}
 
 random_list_l <- data.frame(value = c(999, rnorm(500, mean = 1, sd = 0.1)))
 
@@ -178,7 +177,7 @@ plot+ggplot2::geom_hline(yintercept =1, col="red")
 
 ```
 
-```{r example14}
+```{r example14, warning = FALSE}
 
 random_df_w <- data.frame( ID = LETTERS[1:10], matrix(stats::rnorm(10 * 500, mean = 1, sd = 0.1), nrow = 10, ncol = 500))
 
@@ -187,7 +186,7 @@ plot_data_for_Dataframes(random_df_w, format = "Wide" , limit_y_axis_min_max = F
 
 ```
 
-```{r example15}
+```{r example15, warning = FALSE}
 
 random_df_l <- as.data.frame(t(random_df_w))
 
@@ -203,7 +202,7 @@ plot_skills(skill, format = "Wide", col_line = "blue",col_dots = "grey")
 ```
 
 
-```{r example17}
+```{r example17, warning = FALSE}
 
 plot_skills_for_Dataframes(skill_df,  format = "Wide",  col_line = "blue",   col_dots = "grey")
 
