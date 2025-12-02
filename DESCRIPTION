@@ -1,0 +1,18 @@
+Package: SRTTAnalysis
+Title: Reaction Time Data Analysis
+Version: 0.0.0.9000
+Authors@R: 
+    person("Alberto", "Failla", email = "alberto.failla@outlook.it", role = c("aut", "cre"))
+Description: This package includes a set of functions to analyse raw reaction time data (e.g., SRTT), calculate performance and plot the results of this analysis
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports:
+	tidyr,
+	dplyr,
+	runner,
+	fANCOVA,
+	ggplot2,
+	gridExtra,
+	Rmisc
