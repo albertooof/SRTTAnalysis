@@ -36,6 +36,9 @@ You can also install the development version of SRTTAnalysis from [GitHub](https
 devtools::install_github("albertooof/SRTTAnalysis")
 ```
 
+## Types of Dataframe expected as input
+
+![](man/figures/TypesOfDataframe.png)
 
 ## Example
 
