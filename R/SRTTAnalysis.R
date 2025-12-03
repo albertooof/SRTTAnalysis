@@ -14,7 +14,7 @@
 #' @param data Single participant data, including their ID
 #' @param format How are the data shaped? "Long" or "Wide"
 #' @param unit Unit of the response times, can take either "Seconds" or "Milliseconds"
-#' @param type_of_filtering What type of filtering do you want to apply?  "Fixed_Window" only applies a fixed window type, instead, "Rolling_Standard_Deviation", first applies a fixed windown and then a rolling window
+#' @param type_of_filtering What type of filtering do you want to apply?  "Fixed_Window" only applies a fixed window type, instead, "Rolling_Standard_Deviation", only applies a rolling window "Fixed_and_Rolling", first applies a fixed window and then a rolling window
 #' @param lower_boundary_fixed_filtering_milliseconds During the 'Fixed_Window' filtering what is the lower boundary (in milliseconds)? Enter an integer
 #' @param upper_boundary_fixed_filtering_milliseconds During the 'Fixed_Window' filtering what is the upper boundary (in milliseconds)? Enter an integer
 #' @param standard_deviations During the 'Rolling_Standard_Deviation' filtering, how many standard deviations from the mean do you want to filter? Enter a numeric value > 1
@@ -147,6 +147,41 @@ SRTT_analysis <- function(data,
   #   <><><><><><><><><><><><>  FILTERING WITH ROLLING STANDARD DEVIATION <><><><><><><><><><><><> ----
 
   if (type_of_filtering == "Rolling_Standard_Deviation"){
+
+
+    # we need to go from percentage sign to an actual number of trials
+    running_window_width <- ceiling(running_window_width_percentage * length(data_frame))
+
+    # calculate the running standard deviation and running mean
+    rolling_standard_deviation <- runner::runner( data_frame ,
+                                                  k = running_window_width ,
+                                                  f = stats::sd ,
+                                                  na_pad = FALSE) # CALCULATED ROLLING STD
+    rolling_mean <- runner::runner( data_frame ,
+                                    k = running_window_width ,
+                                    f = mean ,
+                                    na_pad = FALSE) # CALCULATE ROLLING MEAN
+
+    # calculate the running mean plus and minus the running standard deviation
+    mini <- rolling_mean - (standard_deviations * rolling_standard_deviation)              # MEAN MINUS X STD
+    maxi <- rolling_mean + (standard_deviations * rolling_standard_deviation)                # MEAN PLUS X STD
+
+
+    filter_aa <- dplyr::between(data_frame, mini, maxi)   # RETURNS A LOGICAL VECTOR SAYING WHETHER THAT INDEX IS BETWEEN THESE TWO LIMITS
+    indices <- base::which(filter_aa == FALSE)                                    # FIND INDEXES
+    data_frame_1 <- data_frame
+    data_frame_1[indices] <- NA               # REPLACE WITH na
+
+    #<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+
+  }
+
+
+  # ----
+  #   <><><><><><><><><><><><>  FILTERING WITH FIXED WINDOW AND ROLLING STANDARD DEVIATION <><><><><><><><><><><><> ----
+
+  if (type_of_filtering == "Fixed_and_Rolling"){
 
     #  Filter trials where they might have taken a break and where they are too quick
     filter_aa <- dplyr::between(data_frame, lower_boundary_fixed_filtering_milliseconds, upper_boundary_fixed_filtering_milliseconds)
@@ -438,7 +473,7 @@ percentage_of_filtered_values <- function(data,
 
   # rounds_of_equal_length == TRUE ----
 
-  if (rounds_of_equal_length == TRUE){
+  if (rounds_of_equal_length == TRUE | rounds_of_equal_length == T){
 
     # initialize temporary data frame, this looks at one ID at a time and one round at a time
     NAs_local <- NULL
@@ -538,7 +573,7 @@ percentage_of_filtered_values <- function(data,
   # ----
   # rounds_of_equal_length == FALSE ----
 
-  if (rounds_of_equal_length == FALSE){
+  if (rounds_of_equal_length == FALSE | rounds_of_equal_length == F){
 
 
     # initialize temporary data frame, this looks at one ID at a time and one round at a time
@@ -877,7 +912,7 @@ Calculate_Skill_Sequence <- function(data,
 
   # rounds_of_equal_length == TRUE ----
 
-  if (rounds_of_equal_length == TRUE){
+  if (rounds_of_equal_length == TRUE | rounds_of_equal_length == T){
 
     # initialize temporary data frame, this looks at one ID at a time and one round at a time
     skill_local <- NULL
@@ -918,7 +953,7 @@ Calculate_Skill_Sequence <- function(data,
       data_block_Post$Trial_Number <- 1:nrow(data_block_Post)
 
 
-      if (automatically_select_span == TRUE){
+      if (automatically_select_span == TRUE | automatically_select_span == T){
 
         #Smoothing parameters >> LOESS MODEL
 
@@ -948,14 +983,14 @@ Calculate_Skill_Sequence <- function(data,
 
 
 
-      if (size_of_trial_window_for_skill_same == FALSE){
+      if (size_of_trial_window_for_skill_same == FALSE | size_of_trial_window_for_skill_same == F){
 
         window_size_training_SEQ <- round( ( nrow(data_block_Training) * size_of_trial_window_for_skill_percentage_SEQ), digits = 0)
         window_size_training_RND <- round( ( nrow(data_block_Post) * size_of_trial_window_for_skill_percentage_RND), digits = 0)
       }
 
 
-      if (size_of_trial_window_for_skill_same == TRUE){
+      if (size_of_trial_window_for_skill_same == TRUE | size_of_trial_window_for_skill_same == T){
 
         # it is the same value but with two names
         window_size_training_SEQ <- round( ( nrow(data_block_Training) * size_of_trial_window_for_skill_percentage), digits = 0)
@@ -1042,7 +1077,7 @@ Calculate_Skill_Sequence <- function(data,
   # ----
   # rounds_of_equal_length == FALSE ----
 
-  if (rounds_of_equal_length == FALSE){
+  if (rounds_of_equal_length == FALSE | rounds_of_equal_length == F){
 
 
     # initialize temporary data frame, this looks at one ID at a time and one round at a time
@@ -1091,7 +1126,7 @@ Calculate_Skill_Sequence <- function(data,
       data_block_Post$Trial_Number <- 1:nrow(data_block_Post)
 
 
-      if (automatically_select_span == TRUE){
+      if (automatically_select_span == TRUE | automatically_select_span == T){
 
         #Smoothing parameters >> LOESS MODEL
 
@@ -1333,7 +1368,7 @@ Calculate_Skill_Sequence_for_Dataframes <- function(data,
 #' random_list_l <- rbind(999 , (as.data.frame(stats::rnorm(500, mean = 1, sd = 0.1))))
 #' plot <- plot_data(random_list_w,format = "Wide" , limit_y_axis_min_max = TRUE,  limit_y_axis_lower = 0.5,  limit_y_axis_upper = 1.5,  design = c(50, 200, 50, 50, 100, 50), function_to_fit = "loess", span_loess_fitting = 0.1,   standard_error = FALSE, color_dots = "black",   color_line = "grey",  color_intercept = "grey")
 #' plot+ggplot2::geom_hline(yintercept =1, col="red")
-#' plot <- plot_data(random_list_l, format = "Long" , limit_y_axis_min_max = TRUE,limit_y_axis_lower = 0.5,  limit_y_axis_upper = 1.5,  design = c(50, 200, 50, 50, 100, 50), function_to_fit = "lm",   span_loess_fitting = 0.1, standard_error = T,  color_dots = "black",  color_line = "grey",  color_intercept = "grey")
+#' plot <- plot_data(random_list_l, format = "Long" , limit_y_axis_min_max = TRUE,limit_y_axis_lower = 0.5,  limit_y_axis_upper = 1.5,  design = c(50, 200, 50, 50, 100, 50), function_to_fit = "lm",   span_loess_fitting = 0.1, standard_error = TRUE,  color_dots = "black",  color_line = "grey",  color_intercept = "grey")
 #' plot+ggplot2::geom_hline(yintercept =1, col="red")
 plot_data <- function(data,
                       format = "Wide" ,
@@ -1456,10 +1491,10 @@ plot_data <- function(data,
 #' @export
 #' @examples
 #' # Basic usage
-#' #' random_df_w <- data.frame( ID = LETTERS[1:5], matrix(stats::rnorm(5 * 500, mean = 1, sd = 0.1), nrow = 5, ncol = 500))
-#' plot_data_for_Dataframes(random_df_w, format = "Wide" , # Long limit_y_axis_min_max = FALSE, limit_y_axis_lower = 0.8, limit_y_axis_upper = 1, design = c(50, 200, 50, 50, 100, 50), function_to_fit = "loess", # lm span_loess_fitting = 0.25, standard_error = FALSE, color_dots = "black", color_line = "grey", color_intercept = "grey")
+#' random_df_w <- data.frame( ID = LETTERS[1:5], matrix(stats::rnorm(5 * 500, mean = 1, sd = 0.1), nrow = 5, ncol = 500))
+#' plot_data_for_Dataframes(random_df_w, format = "Wide" , limit_y_axis_min_max = FALSE, limit_y_axis_lower = 0.8, limit_y_axis_upper = 1, design = c(50, 200, 50, 50, 100, 50), function_to_fit = "loess", span_loess_fitting = 0.25, standard_error = FALSE, color_dots = "black", color_line = "grey", color_intercept = "grey")
 #' random_df_l <- as.data.frame(t(random_df_w))
-#' plot_data_for_Dataframes(random_df_l,format = "Long" ,  limit_y_axis_min_max = FALSE, limit_y_axis_lower = 0.8,   limit_y_axis_upper = 1,  design = c(50, 100, 50, 50, 100, 50,  25, 50, 25), function_to_fit = "lm",  span_loess_fitting = 0.25,   standard_error = FALSE,  color_dots = "black", color_line = "grey",  color_intercept = "grey")
+#' plot_data_for_Dataframes(random_df_l, format = "Long" ,  limit_y_axis_min_max = FALSE, limit_y_axis_lower = 0.8,   limit_y_axis_upper = 0.9,  design = c(50, 100, 50, 50, 100, 50,  25, 50, 25), function_to_fit = "lm",  span_loess_fitting = 0.25,   standard_error = FALSE,  color_dots = "black", color_line = "grey",  color_intercept = "grey")
 plot_data_for_Dataframes <- function(data,
                                      format = "Wide" , # Long
                                      limit_y_axis_min_max = FALSE,
@@ -1467,7 +1502,7 @@ plot_data_for_Dataframes <- function(data,
                                      limit_y_axis_upper = 1,
                                      design = c(50, 200, 50,
                                                 50, 100, 50),
-                                     function_to_fit = "loess", # lm
+                                     function_to_fit = "loess",
                                      span_loess_fitting = 0.25,
                                      standard_error = FALSE,
                                      color_dots = "black",
@@ -1600,7 +1635,9 @@ plot_data_for_Dataframes <- function(data,
 #' @export
 #' @examples
 #' # Basic usage
-#' plot_skills(data, format = "Wide", col_line = "grey",col_dots = "grey")
+#' data_wide <- data.frame(id = 999, t(rnorm(12, mean = 1, sd = 0.1)))
+#' names(data_wide) <- c("ID", "preRND1", "Train1", "postRND1", "Skill1", "preRND2", "Train2", "postRND2", "Skill2", "preRND3", "Train3", "postRND3", "Skill3")
+#' plot_skills(data_wide, format = "Wide", col_line = "grey",col_dots = "grey")
 plot_skills <- function(data,
                         format = "Wide",
                         col_line = "grey",
@@ -1773,8 +1810,12 @@ plot_skills <- function(data,
 #' @export
 #' @examples
 #' # Basic usage
-#' plot_skills(dataframe_wide,  format = "Wide",   col_line = "blue", col_dots = "grey")
-#' plot_skills_for_Dataframes(dataframe_long,  format = "Wide",  col_line = "blue",   col_dots = "grey")
+#' random_matrix <- matrix(stats::rnorm(5 * 12, mean = 1, sd = 0.1), nrow = 5, ncol = 12)
+#' random_df_w <- data.frame(ID = LETTERS[1:5], random_matrix)
+#' names(random_df_w) <- c("ID", "preRND1", "Train1", "postRND1", "Skill1", "preRND2", "Train2", "postRND2", "Skill2", "preRND3", "Train3", "postRND3", "Skill3")
+#' plot_skills_for_Dataframes(random_df_w,  format = "Wide",   col_line = "blue", col_dots = "grey")
+#' random_df_l <- as.data.frame(t(random_df_w))
+#' plot_skills_for_Dataframes(random_df_l,  format = "Long",  col_line = "blue",   col_dots = "grey")
 plot_skills_for_Dataframes <- function(data,
                                        format = "Wide",
                                        col_line = "grey",
@@ -1921,16 +1962,130 @@ plot_skills_for_Dataframes <- function(data,
 
 
   # if format == "Long" , we need to save ID
-  #  if (format == "Long"){
+  if (format == "Long"){
 
   # find current ID number
-  #  current_id <- data[1,]
+    current_id <- data[1,]
 
 
   # remove current ID number
-  # data <- data[-1,]
+    data <- data[-1,]
 
-  #}
+    data$var <- rownames(data)
+
+
+    # save 'var' coloumn
+    col_names <- data$var
+
+    # Transpose everything except var column
+    data <- as.data.frame(t(data[, -which(names(data) == "var")]))
+
+    # Assign var values as column names
+    colnames(data) <- col_names
+
+
+    #<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+    # filter whether it is Skill or average RT data
+
+    df_skill <- dplyr::select(data, starts_with("Skill"))
+
+    df_RT <- dplyr::select(data, !starts_with("Skill"))
+
+    #<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+
+    # standardize names for df_RT
+    name_sequence <- c("preRND", "SEQ", "postRND")
+
+    num_cols <- ncol(df_RT)
+
+    sequence_length <- length(name_sequence)
+
+    base_names <- rep(name_sequence, length.out = num_cols)
+
+    iteration_index <- rep(1:ceiling(num_cols / sequence_length), each = sequence_length, length.out = num_cols)
+
+    new_names <- paste0(base_names, "_", iteration_index)
+
+    names(df_RT) <- new_names
+
+    df_RT <- as.data.frame(df_RT)
+
+    df_RT$ID <- t(current_id)
+
+    #<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+
+    # standardize names for df_skill
+    name_sequence <- c("Skill")
+
+    num_cols <- ncol(df_skill)
+
+    sequence_length <- length(name_sequence)
+
+    base_names <- rep(name_sequence, length.out = num_cols)
+
+    iteration_index <- rep(1:ceiling(num_cols / sequence_length), each = sequence_length, length.out = num_cols)
+
+    new_names <- paste0(base_names, "_", iteration_index)
+
+    names(df_skill) <- new_names
+
+
+    df_skill <- as.data.frame(df_skill)
+
+
+    df_skill$ID <- t(current_id)
+
+    #<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+
+
+    # pivot_longer
+    df_skill <- tidyr::pivot_longer(df_skill,
+                                    cols=1:(ncol(df_skill)-1),
+                                    names_to='var',
+                                    values_to='ResponseTime')
+
+
+    df_RT <- tidyr::pivot_longer(df_RT,
+                                 cols=1:(ncol(df_RT)-1),
+                                 names_to='var',
+                                 values_to='ResponseTime')
+
+    #<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+
+    # order the x-axis variables as factors
+    df_RT$var <- factor(df_RT$var, levels = c("preRND_1", "SEQ_1", "postRND_1",
+                                              "preRND_2", "SEQ_2", "postRND_2",
+                                              "preRND_3", "SEQ_3", "postRND_3",
+                                              "preRND_4", "SEQ_4", "postRND_4",
+                                              "preRND_5", "SEQ_5", "postRND_5",
+                                              "preRND_6", "SEQ_6", "postRND_6"))
+
+    df_skill$var <- factor(df_skill$var, levels = c("Skill_1", "Skill_2",
+                                                    "Skill_3", "Skill_4",
+                                                    "Skill_5", "Skill_6"))
+
+
+    #<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+    df_RT$ResponseTime <- as.numeric(df_RT$ResponseTime)
+
+    df_skill$ResponseTime <- as.numeric(df_skill$ResponseTime)
+
+
+    #<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+    df_RT$group <- "A"
+    df_skill$group <- "A"
+
+    #<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+
+  }
 
 
   #<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>

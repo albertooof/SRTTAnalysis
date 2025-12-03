@@ -15,4 +15,5 @@ Imports:
 	fANCOVA,
 	ggplot2,
 	gridExtra,
-	Rmisc
+	Rmisc,
+	data.table

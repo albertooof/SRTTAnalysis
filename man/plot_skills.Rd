@@ -26,5 +26,7 @@ Y-axis = response time
 }
 \examples{
 # Basic usage
-plot_skills(data, format = "Wide", col_line = "grey",col_dots = "grey")
+data_wide <- data.frame(id = 999, t(rnorm(12, mean = 1, sd = 0.1)))
+names(data_wide) <- c("ID", "preRND1", "Train1", "postRND1", "Skill1", "preRND2", "Train2", "postRND2", "Skill2", "preRND3", "Train3", "postRND3", "Skill3")
+plot_skills(data_wide, format = "Wide", col_line = "grey",col_dots = "grey")
 }

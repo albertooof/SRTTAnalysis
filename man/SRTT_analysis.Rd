@@ -22,7 +22,7 @@ SRTT_analysis(
 
 \item{unit}{Unit of the response times, can take either "Seconds" or "Milliseconds"}
 
-\item{type_of_filtering}{What type of filtering do you want to apply?  "Fixed_Window" only applies a fixed window type, instead, "Rolling_Standard_Deviation", first applies a fixed windown and then a rolling window}
+\item{type_of_filtering}{What type of filtering do you want to apply?  "Fixed_Window" only applies a fixed window type, instead, "Rolling_Standard_Deviation", only applies a rolling window "Fixed_and_Rolling", first applies a fixed window and then a rolling window}
 
 \item{lower_boundary_fixed_filtering_milliseconds}{During the 'Fixed_Window' filtering what is the lower boundary (in milliseconds)? Enter an integer}
 
