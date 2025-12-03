@@ -70,9 +70,9 @@ If "size_of_trial_window_for_skill_same" is FALSE, you will need to specify "siz
 }
 \examples{
 # Basic usage
-data_wide <- cbind(999, (as.data.frame(t(stats::rnorm(1200, mean = 1, sd = 0.1)))))
+data_wide <- data.frame(id = 999, t(rnorm(1200, mean = 1, sd = 0.1)))
 Calculate_Skill_Sequence(data_wide, format= "Wide" , rounds_of_equal_length = FALSE, design = c(50, 200, 50, 50, 300, 50, 50, 400, 50), span_random = 0.20,  span_training = 0.14, automatically_select_span = TRUE, size_of_trial_window_for_skill_same = TRUE, size_of_trial_window_for_skill_percentage = 0.15 , size_of_trial_window_for_skill_percentage_SEQ = 0.28, size_of_trial_window_for_skill_percentage_RND = 0.50)
 
-data_long <- rbind(999 , (as.data.frame(stats::rnorm(1200, mean = 1, sd = 0.1))))
+data_long <- data.frame(value = c(999, rnorm(1200, mean = 1, sd = 0.1)))
 Calculate_Skill_Sequence(data_long, format= "Long" , design = c(40, 300, 60), size_of_trial_window_for_skill_percentage = 0.10)
 }

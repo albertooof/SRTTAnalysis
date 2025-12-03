@@ -48,10 +48,10 @@ The default value is 2 standard deviation and a window size of ~2.5\% of the tot
 }
 \examples{
 # Basic usage
-ID <- LETTERS[1:10]
-dataframe_wide <- data.frame(ID = ID, matrix(stats::rnorm(10 * 500, mean = 1, sd = 0.1), nrow = 10, ncol = 500) )
-SRTT_analysis_for_Dataframes(dataframe_wide, format = "Wide", standard_deviations = 3.1)
+ID <- LETTERS[1:5]
+dataframe_wide <- data.frame(ID = ID, matrix(stats::rnorm(5 * 500, mean = 1, sd = 0.1), nrow = 5, ncol = 500) )
+head(SRTT_analysis_for_Dataframes(dataframe_wide, format = "Wide")[, 1:10])
 
 dataframe_long <- as.data.frame(t(dataframe_wide))
-SRTT_analysis_for_Dataframes(dataframe_long, format = "Long" ,running_window_width_percentage = 0.3)
+head(SRTT_analysis_for_Dataframes(dataframe_long, format = "Long" ,running_window_width_percentage = 0.3)[, 1:10])
 }

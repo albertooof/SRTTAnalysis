@@ -50,9 +50,9 @@ The default value is 2 standard deviation and a window size of ~2.5\% of the tot
 }
 \examples{
 # Basic usage
-data_wide <- cbind(999, (as.data.frame(t(stats::rnorm(500, mean = 1, sd = 0.1)))))
-SRTT_analysis(data_wide, format= "Wide")
+data_wide <- data.frame(id = 999, t(rnorm(500, mean = 1, sd = 0.1)))
+head(SRTT_analysis(data_wide, format = "Wide")[, 1:10])
 
-data_long <- rbind(999 , (as.data.frame(stats::rnorm(500, mean = 1, sd = 0.1))))
-SRTT_analysis(data_long)
+data_long <- data.frame(value = c(999, rnorm(500, mean = 1, sd = 0.1)))
+head(SRTT_analysis(data_long, format = "Long")[, 1:10])
 }

@@ -40,10 +40,10 @@ If rounds have different number of trials for each section (rounds_of_equal_leng
 }
 \examples{
 # Basic usage
-random_matrix <- matrix(stats::rnorm(10 * 1200, mean = 1, sd = 0.1), nrow = 10, ncol = 1200)
-for (i in 1:10) { num_nas <- sample(50:300, 1)
+random_matrix <- matrix(stats::rnorm(5 * 1200, mean = 1, sd = 0.1), nrow = 5, ncol = 1200)
+for (i in 1:5) { num_nas <- sample(50:300, 1)
 random_matrix[i, sample(1200, num_nas)] <- NA }
-random_df_w <- data.frame(ID = LETTERS[1:10], random_matrix)
+random_df_w <- data.frame(ID = LETTERS[1:5], random_matrix)
 percentage_of_filtered_values_for_Dataframe(random_df_w, format = "Wide", number_of_rounds = 3, rounds_of_equal_length = FALSE, design = c(50 , 180, 50, 50, 300, 50, 50 , 180, 50, 50 , 180, 50))
 random_df_l <- as.data.frame(t(random_df_w))
 percentage_of_filtered_values_for_Dataframe(data = random_df_l,format = "Long", number_of_rounds = 3, rounds_of_equal_length = FALSE, design = c(50 , 180, 50, 50, 300, 50, 50 , 180, 50, 50 , 180, 50))

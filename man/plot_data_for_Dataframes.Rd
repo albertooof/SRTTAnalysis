@@ -57,7 +57,7 @@ can fit either a linear or a loess function the data
 }
 \examples{
 # Basic usage
-#' random_df_w <- data.frame( ID = LETTERS[1:10], matrix(stats::rnorm(10 * 500, mean = 1, sd = 0.1), nrow = 10, ncol = 500))
+#' random_df_w <- data.frame( ID = LETTERS[1:5], matrix(stats::rnorm(5 * 500, mean = 1, sd = 0.1), nrow = 5, ncol = 500))
 plot_data_for_Dataframes(random_df_w, format = "Wide" , # Long limit_y_axis_min_max = FALSE, limit_y_axis_lower = 0.8, limit_y_axis_upper = 1, design = c(50, 200, 50, 50, 100, 50), function_to_fit = "loess", # lm span_loess_fitting = 0.25, standard_error = FALSE, color_dots = "black", color_line = "grey", color_intercept = "grey")
 random_df_l <- as.data.frame(t(random_df_w))
 plot_data_for_Dataframes(random_df_l,format = "Long" ,  limit_y_axis_min_max = FALSE, limit_y_axis_lower = 0.8,   limit_y_axis_upper = 1,  design = c(50, 100, 50, 50, 100, 50,  25, 50, 25), function_to_fit = "lm",  span_loess_fitting = 0.25,   standard_error = FALSE,  color_dots = "black", color_line = "grey",  color_intercept = "grey")
