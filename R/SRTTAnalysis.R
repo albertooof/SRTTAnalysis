@@ -2103,7 +2103,7 @@ plot_skills_for_Dataframes <- function(data,
     ggplot2::geom_point(ggplot2::aes(col = ID), size = 0.5)+
     ggplot2::geom_line(ggplot2::aes(group = ID , col = ID), linewidth  = 0.2, alpha = 0.4)+
     ggplot2::geom_errorbar(data = df_skill_mean,
-                  ggplot2::aes(x = var, ymin = ResponseTime - se, ymax = ResponseTime + se), linewidth = 2 , width = .1, colour = col_line) +
+                  ggplot2::aes(x = var, ymin = ResponseTime - get(error_measure), ymax = ResponseTime + get(error_measure)), linewidth = 2 , width = .1, colour = col_line) +
     ggplot2::geom_point(data = df_skill_mean, col = col_dots, size = 4)+
     ggplot2::theme_bw()+
     ggplot2::theme(legend.position = "none")+
@@ -2115,7 +2115,7 @@ plot_skills_for_Dataframes <- function(data,
     ggplot2::theme_bw()+
     ggplot2::geom_line(ggplot2::aes(group = ID, col = ID), linewidth  = 0.1, alpha =0.4)+
     ggplot2::geom_errorbar(data = df_RT_mean,
-                  ggplot2::aes(x = var, ymin = ResponseTime - se, ymax = ResponseTime + se), linewidth = 2 , width = .1, colour = col_line) +
+                  ggplot2::aes(x = var, ymin = ResponseTime - get(error_measure) , ymax = ResponseTime + get(error_measure)), linewidth = 2 , width = .1, colour = col_line) +
     ggplot2::geom_point(data = df_RT_mean, col = col_dots, size = 4)+
     ggplot2::theme(legend.position = "none")+
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 30, hjust = 1))+
