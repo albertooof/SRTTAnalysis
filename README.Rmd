@@ -173,6 +173,9 @@ dev.off()
 
 ```
 
+![](man/figures/README-example12-1.png)
+
+
 ```{r example13, warning = FALSE}
 
 random_list_l <- data.frame(value = c(999, rnorm(500, mean = 1, sd = 0.1)))
@@ -186,6 +189,9 @@ dev.off()
 
 ```
 
+![](man/figures/README-example13-1.png)
+
+
 ```{r example14, warning = FALSE}
 
 random_df_w <- data.frame( ID = LETTERS[1:10], matrix(stats::rnorm(10 * 500, mean = 1, sd = 0.1), nrow = 10, ncol = 500))
@@ -198,6 +204,9 @@ dev.off()
 
 ```
 
+![](man/figures/README-example14-1.png)
+
+
 ```{r example15, warning = FALSE}
 
 random_df_l <- as.data.frame(t(random_df_w))
@@ -207,6 +216,9 @@ png("plot4.png", width = 800, height = 600)
 plot_data_for_Dataframes(random_df_l,format = "Long" ,  limit_y_axis_min_max = FALSE, limit_y_axis_lower = 0.8,   limit_y_axis_upper = 1,  design = c(50, 100, 50, 50, 100, 50,  25, 50, 25), function_to_fit = "lm",  span_loess_fitting = 0.25,   standard_error = FALSE,  color_dots = "black", color_line = "grey",  color_intercept = "grey")
 
 ```
+
+![](man/figures/README-example15-1.png)
+
 
 ```{r example16}
 
@@ -219,6 +231,8 @@ dev.off()
 
 ```
 
+![](man/figures/README-example16-1.png)
+
 
 ```{r example17, warning = FALSE}
 
@@ -230,4 +244,6 @@ dev.off()
 
 
 ```
+
+![](man/figures/README-example17-1.png)
 
