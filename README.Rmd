@@ -157,18 +157,11 @@ Calculate_Skill_Sequence_for_Dataframes(data = random_df_l, format= "Long" ,  nu
 
 ```
 
-```{r example12, warning = FALSE}
+```{r example12, warning = FALSE, eval=FALSE}
 
 random_list_w <- cbind(999, (as.data.frame(t(stats::rnorm(500, mean = 1, sd = 0.1)))))
 
-
-png("plot1.png", width = 800, height = 600)
-
 plot_data(random_list_w,format = "Wide" , limit_y_axis_min_max = TRUE,  limit_y_axis_lower = 0.5,  limit_y_axis_upper = 1.5,  design = c(50, 200, 50, 50, 100, 50), function_to_fit = "loess", span_loess_fitting = 0.1,   standard_error = FALSE, color_dots = "black",   color_line = "grey",  color_intercept = "grey")
-
-dev.off()
-
-
 
 
 ```
@@ -176,15 +169,11 @@ dev.off()
 ![](man/figures/README-example12-1.png)
 
 
-```{r example13, warning = FALSE}
+```{r example13, warning = FALSE, eval=FALSE}
 
 random_list_l <- data.frame(value = c(999, rnorm(500, mean = 1, sd = 0.1)))
 
-png("plot2.png", width = 800, height = 600)
-
 plot_data(random_list_l, format = "Long" , limit_y_axis_min_max = TRUE,limit_y_axis_lower = 0.5,  limit_y_axis_upper = 1.5,  design = c(50, 200, 50, 50, 100, 50), function_to_fit = "lm",   span_loess_fitting = 0.1, standard_error = T,  color_dots = "black",  color_line = "grey",  color_intercept = "grey")
-
-dev.off()
 
 
 ```
@@ -192,26 +181,20 @@ dev.off()
 ![](man/figures/README-example13-1.png)
 
 
-```{r example14, warning = FALSE}
+```{r example14, warning = FALSE, eval=FALSE}
 
 random_df_w <- data.frame( ID = LETTERS[1:10], matrix(stats::rnorm(10 * 500, mean = 1, sd = 0.1), nrow = 10, ncol = 500))
 
-png("plot3.png", width = 800, height = 600)
-
 plot_data_for_Dataframes(random_df_w, format = "Wide" , limit_y_axis_min_max = FALSE, limit_y_axis_lower = 0.8, limit_y_axis_upper = 1, design = c(50, 200, 50, 50, 100, 50), function_to_fit = "loess", span_loess_fitting = 0.25, standard_error = FALSE, color_dots = "black", color_line = "grey", color_intercept = "grey")
-
-dev.off()
 
 ```
 
 ![](man/figures/README-example14-1.png)
 
 
-```{r example15, warning = FALSE}
+```{r example15, warning = FALSE, eval=FALSE}
 
 random_df_l <- as.data.frame(t(random_df_w))
-
-png("plot4.png", width = 800, height = 600)
 
 plot_data_for_Dataframes(random_df_l,format = "Long" ,  limit_y_axis_min_max = FALSE, limit_y_axis_lower = 0.8,   limit_y_axis_upper = 1,  design = c(50, 100, 50, 50, 100, 50,  25, 50, 25), function_to_fit = "lm",  span_loess_fitting = 0.25,   standard_error = FALSE,  color_dots = "black", color_line = "grey",  color_intercept = "grey")
 
@@ -220,9 +203,7 @@ plot_data_for_Dataframes(random_df_l,format = "Long" ,  limit_y_axis_min_max = F
 ![](man/figures/README-example15-1.png)
 
 
-```{r example16}
-
-png("plot5.png", width = 800, height = 600)
+```{r example16, eval=FALSE}
 
 data_wide <- data.frame(id = 999, t(rnorm(12, mean = 1, sd = 0.1)))
 
@@ -232,15 +213,11 @@ plots <- plot_skills(data_wide, format = "Wide", col_line = "grey",col_dots = "g
 
 plots$plot1
 
-
-dev.off()
-
-
 ```
 
 ![](man/figures/README-example16-1.png)
 
-```{r example17}
+```{r example17, eval=FALSE}
 
 plots$plot2
 
@@ -249,9 +226,7 @@ plots$plot2
 ![](man/figures/README-example17-1.png)
 
 
-```{r example18, warning = FALSE}
-
-png("plot6.png", width = 800, height = 600)
+```{r example18, warning = FALSE, eval=FALSE}
 
 random_matrix <- matrix(stats::rnorm(5 * 12, mean = 1, sd = 0.1), nrow = 5, ncol = 12)
 
@@ -263,15 +238,15 @@ plots <- plot_skills_for_Dataframes(random_df_w,  format = "Wide",   col_line = 
 
 plots$plot1
 
-dev.off()
-
 
 ```
 
 ![](man/figures/README-example18-1.png)
-```{r example19, warning = FALSE}
+```{r example19, warning = FALSE, eval=FALSE}
 random_df_l <- as.data.frame(t(random_df_w))
+
 plots <- plot_skills_for_Dataframes(random_df_l,  format = "Long",  col_line = "blue",   col_dots = "grey")
+
 plots$plot2
 
 
