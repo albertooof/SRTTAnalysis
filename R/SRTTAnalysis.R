@@ -1637,7 +1637,9 @@ plot_data_for_Dataframes <- function(data,
 #' # Basic usage
 #' data_wide <- data.frame(id = 999, t(rnorm(12, mean = 1, sd = 0.1)))
 #' names(data_wide) <- c("ID", "preRND1", "Train1", "postRND1", "Skill1", "preRND2", "Train2", "postRND2", "Skill2", "preRND3", "Train3", "postRND3", "Skill3")
-#' plot_skills(data_wide, format = "Wide", col_line = "grey",col_dots = "grey")
+#' plots <- plot_skills(data_wide, format = "Wide", col_line = "grey",col_dots = "grey")
+#' plots$plot1
+#' plots$plot2
 plot_skills <- function(data,
                         format = "Wide",
                         col_line = "grey",
@@ -1786,7 +1788,7 @@ plot_skills <- function(data,
 
 
 
-  gridExtra::grid.arrange(p1, p2, ncol=2)
+    return(list(plot1 = p1, plot2 = p2))
 
 
 
@@ -1813,9 +1815,11 @@ plot_skills <- function(data,
 #' random_matrix <- matrix(stats::rnorm(5 * 12, mean = 1, sd = 0.1), nrow = 5, ncol = 12)
 #' random_df_w <- data.frame(ID = LETTERS[1:5], random_matrix)
 #' names(random_df_w) <- c("ID", "preRND1", "Train1", "postRND1", "Skill1", "preRND2", "Train2", "postRND2", "Skill2", "preRND3", "Train3", "postRND3", "Skill3")
-#' plot_skills_for_Dataframes(random_df_w,  format = "Wide",   col_line = "blue", col_dots = "grey")
+#' plots <- plot_skills_for_Dataframes(random_df_w,  format = "Wide",   col_line = "blue", col_dots = "grey")
+#' plots$plot1
 #' random_df_l <- as.data.frame(t(random_df_w))
-#' plot_skills_for_Dataframes(random_df_l,  format = "Long",  col_line = "blue",   col_dots = "grey")
+#' plots <- plot_skills_for_Dataframes(random_df_l,  format = "Long",  col_line = "blue",   col_dots = "grey")
+#' plots$plot2
 plot_skills_for_Dataframes <- function(data,
                                        format = "Wide",
                                        col_line = "grey",
@@ -2123,7 +2127,7 @@ plot_skills_for_Dataframes <- function(data,
     ggplot2::theme(axis.title.y=ggplot2::element_blank())
 
 
-  gridExtra::grid.arrange(p1, p2, ncol=2)
+  return(list(plot1 = p1, plot2 = p2))
 
 
 
