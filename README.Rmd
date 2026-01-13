@@ -13,12 +13,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-# SRTTAnalysis <img src="man/figures/logo2.png" align="right" height="139" alt="" />
+# SRTTAnalysis <img src="man/figures/logo2.png" align="right" height="139"/>
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
-This package includes a set of functions to analyse raw reaction time data (e.g., SRTT), calculate performance and plot the results of this analysis 
+This package includes a set of functions to analyse raw reaction time data (e.g., SRTT), calculate performance and plot the results of this analysis
 
 ## Installation
 
@@ -39,7 +40,9 @@ devtools::install_github("albertooof/SRTTAnalysis")
 ## Types of Dataframe expected as input
 
 ![](man/figures/TypesOfDataframe.png)
+
 ## Visual summary for SRTT_analysis function
+
 ![](man/figures/visual_summary.png)
 
 ## Example
@@ -61,7 +64,6 @@ head(SRTT_analysis(data_long, format = "Long", normalize_when = 1, normalize_typ
 
 ```
 
-
 ```{r example2}
 ID <- LETTERS[1:10]
 
@@ -70,7 +72,6 @@ dataframe_wide <- data.frame(ID = ID, matrix(stats::rnorm(10 * 500, mean = 1, sd
 head(SRTT_analysis_for_Dataframes(dataframe_wide, format = "Wide", normalize_when = 3, normalize_type = "min_max")[, 1:10]) 
 ```
 
-
 ```{r example3}
 
 dataframe_long <- as.data.frame(t(dataframe_wide))
@@ -78,7 +79,6 @@ dataframe_long <- as.data.frame(t(dataframe_wide))
 head(SRTT_analysis_for_Dataframes(dataframe_long, format = "Long" ,running_window_width_percentage = 0.3)[, 1:10]) 
 
 ```
-
 
 ```{r example4}
 random_values <- stats::rnorm(1200, mean = 1, sd = 0.1)
@@ -93,7 +93,6 @@ percentage_of_filtered_values(random_list_w, format = "Wide", number_of_rounds =
 
 
 ```
-
 
 ```{r example5}
 random_list_l <- as.data.frame(t(random_list_w))
@@ -170,7 +169,6 @@ plot_data(random_list_w,format = "Wide" , limit_y_axis_min_max = TRUE,  limit_y_
 
 ![](man/figures/README-example12-1.png)
 
-
 ```{r example13, warning = FALSE, eval=FALSE}
 
 random_list_l <- data.frame(value = c(999, rnorm(500, mean = 1, sd = 0.1)))
@@ -182,7 +180,6 @@ plot_data(random_list_l, format = "Long" , limit_y_axis_min_max = TRUE,limit_y_a
 
 ![](man/figures/README-example13-1.png)
 
-
 ```{r example14, warning = FALSE, eval=FALSE}
 
 random_df_w <- data.frame( ID = LETTERS[1:10], matrix(stats::rnorm(10 * 500, mean = 1, sd = 0.1), nrow = 10, ncol = 500))
@@ -193,7 +190,6 @@ plot_data_for_Dataframes(random_df_w, format = "Wide" , limit_y_axis_min_max = F
 
 ![](man/figures/README-example14-1.png)
 
-
 ```{r example15, warning = FALSE, eval=FALSE}
 
 random_df_l <- as.data.frame(t(random_df_w))
@@ -203,7 +199,6 @@ plot_data_for_Dataframes(random_df_l,format = "Long" ,  limit_y_axis_min_max = F
 ```
 
 ![](man/figures/README-example15-1.png)
-
 
 ```{r example16, eval=FALSE}
 
@@ -225,8 +220,8 @@ plots$plot2
 
 
 ```
-![](man/figures/README-example17-1.png)
 
+![](man/figures/README-example17-1.png)
 
 ```{r example18, warning = FALSE, eval=FALSE}
 
@@ -244,6 +239,7 @@ plots$plot1
 ```
 
 ![](man/figures/README-example18-1.png)
+
 ```{r example19, warning = FALSE, eval=FALSE}
 random_df_l <- as.data.frame(t(random_df_w))
 
@@ -255,4 +251,3 @@ plots$plot2
 ```
 
 ![](man/figures/README-example19-1.png)
-
