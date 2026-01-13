@@ -39,6 +39,8 @@ devtools::install_github("albertooof/SRTTAnalysis")
 ## Types of Dataframe expected as input
 
 ![](man/figures/TypesOfDataframe.png)
+## Visual summary for SRTT_analysis function
+![](man/figures/visual_summary.png)
 
 ## Example
 
@@ -48,14 +50,14 @@ Basic examples which show you how to run the code and what output to expect:
 library(SRTTAnalysis)
 
 data_wide <- data.frame(id = 999, t(rnorm(500, mean = 1, sd = 0.1)))
-head(SRTT_analysis(data_wide, format = "Wide")[, 1:10])
+head(SRTT_analysis(data_wide, format = "Wide", normalize_when = 0)[, 1:10])
  
 ```
 
 ```{r example1}
 
 data_long <- data.frame(value = c(999, rnorm(500, mean = 1, sd = 0.1)))
-head(SRTT_analysis(data_long, format = "Long")[, 1:10])
+head(SRTT_analysis(data_long, format = "Long", normalize_when = 1, normalize_type = "z_score")[, 1:10])
 
 ```
 
@@ -65,7 +67,7 @@ ID <- LETTERS[1:10]
 
 dataframe_wide <- data.frame(ID = ID, matrix(stats::rnorm(10 * 500, mean = 1, sd = 0.1), nrow = 10, ncol = 500) )
 
-head(SRTT_analysis_for_Dataframes(dataframe_wide, format = "Wide")[, 1:10]) 
+head(SRTT_analysis_for_Dataframes(dataframe_wide, format = "Wide", normalize_when = 3, normalize_type = "min_max")[, 1:10]) 
 ```
 
 

@@ -8,7 +8,9 @@ SRTT_analysis_for_Dataframes(
   data,
   format = "Long",
   unit = "Seconds",
-  type_of_filtering = "Rolling_Standard_Deviation",
+  normalize_when = 0,
+  normalize_type = normalize_type,
+  type_of_filtering = "Fixed_and_Rolling",
   lower_boundary_fixed_filtering_milliseconds = 200,
   upper_boundary_fixed_filtering_milliseconds = 2000,
   standard_deviations = 2,
@@ -22,7 +24,11 @@ SRTT_analysis_for_Dataframes(
 
 \item{unit}{Unit of the response times, can take either "Seconds" or "Milliseconds"}
 
-\item{type_of_filtering}{What type of filtering do you want to apply?  "Fixed_Window" only applies a fixed window type, instead, "Rolling_Standard_Deviation", first applies a fixed windown and then a rolling window}
+\item{normalize_when}{Do you want to normalize the data? 0 = no normalization; 1 = before the fixed_boundary filtering or before rolling filtering; 2 = after fixed_boundary filtering but before rolling filtering;  3 = after fixed_boundary filtering and after rolling filtering}
+
+\item{normalize_type}{What type of normalization do you want on the data? 1 or "z_score" = Z-scoring; 2 or "min_max" = Min Max scaling}
+
+\item{type_of_filtering}{What type of filtering do you want to apply?  "Fixed_Window" only applies a fixed window type, instead, "Rolling_Standard_Deviation", only applies a rolling window "Fixed_and_Rolling", first applies a fixed window and then a rolling window}
 
 \item{lower_boundary_fixed_filtering_milliseconds}{During the 'Fixed_Window' filtering what is the lower boundary (in milliseconds)? Enter an integer}
 

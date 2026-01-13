@@ -14,6 +14,8 @@
 #' @param data Single participant data, including their ID
 #' @param format How are the data shaped? "Long" or "Wide"
 #' @param unit Unit of the response times, can take either "Seconds" or "Milliseconds"
+#' @param normalize_when Do you want to normalize the data? 0 = no normalization; 1 = before the fixed_boundary filtering or before rolling filtering; 2 = after fixed_boundary filtering but before rolling filtering;  3 = after fixed_boundary filtering and after rolling filtering
+#' @param normalize_type What type of normalization do you want on the data? 1 or "z_score" = Z-scoring; 2 or "min_max" = Min Max scaling
 #' @param type_of_filtering What type of filtering do you want to apply?  "Fixed_Window" only applies a fixed window type, instead, "Rolling_Standard_Deviation", only applies a rolling window "Fixed_and_Rolling", first applies a fixed window and then a rolling window
 #' @param lower_boundary_fixed_filtering_milliseconds During the 'Fixed_Window' filtering what is the lower boundary (in milliseconds)? Enter an integer
 #' @param upper_boundary_fixed_filtering_milliseconds During the 'Fixed_Window' filtering what is the upper boundary (in milliseconds)? Enter an integer
@@ -31,7 +33,9 @@
 SRTT_analysis <- function(data,
                           format = "Long",
                           unit = "Seconds",
-                          type_of_filtering = "Rolling_Standard_Deviation",
+                          normalize_when = 0,
+                          normalize_type = normalize_type,
+                          type_of_filtering = "Fixed_and_Rolling",
                           lower_boundary_fixed_filtering_milliseconds = 200,
                           upper_boundary_fixed_filtering_milliseconds = 2000,
                           standard_deviations = 2,
@@ -119,6 +123,34 @@ SRTT_analysis <- function(data,
   }
 
   # ----
+  #   <><><><><><><><><><><><>  NORMALIZE <><><><><><><><><><><><> ----
+
+  if (normalize_when == 0 ){
+
+    data_frame <- data_frame
+
+  }
+
+  else if (normalize_when == 1){
+
+    if (normalize_type == 1 | normalize_type == "z_score"){
+
+      data_frame <- scale(data_frame)
+
+      data_frame <- as.vector(data_frame)
+
+    }
+    else if (normalize_type == 2 | normalize_type == "min_max"){
+
+      data_frame <- (data_frame - min(data_frame)) / (max(data_frame) - min(data_frame))
+
+      data_frame <- as.vector(data_frame)
+
+    }
+  }
+
+
+  # ----
   #   <><><><><><><><><><><><>  FILTERING WITH FIXED WINDOW <><><><><><><><><><><><> ----
 
 
@@ -144,6 +176,7 @@ SRTT_analysis <- function(data,
 
 
   # ----
+
   #   <><><><><><><><><><><><>  FILTERING WITH ROLLING STANDARD DEVIATION <><><><><><><><><><><><> ----
 
   if (type_of_filtering == "Rolling_Standard_Deviation"){
@@ -193,6 +226,31 @@ SRTT_analysis <- function(data,
     # we need to go from percentage sign to an actual number of trials
     running_window_width <- ceiling(running_window_width_percentage * length(data_frame))
 
+
+
+    #   <><><><><><><><><><><><>  NORMALIZE <><><><><><><><><><><><>
+
+    if (normalize_when == 2){
+
+      if (normalize_type == 1 | normalize_type == "z_score"){
+
+        data_frame_1 <- scale(data_frame_1)
+
+        data_frame_1 <- as.vector(data_frame_1)
+
+      }
+      else if (normalize_type == 2 | normalize_type == "min_max"){
+
+        data_frame_1 <- (data_frame_1 - min(data_frame_1)) / (max(data_frame_1) - min(data_frame_1))
+
+        data_frame_1 <- as.vector(data_frame_1)
+
+      }
+    }
+
+    #   <><><><><><><><><><><><><><><><><><><><><><><><>
+
+
     # calculate the running standard deviation and running mean
     rolling_standard_deviation <- runner::runner( data_frame_1 ,
                                                   k = running_window_width ,
@@ -213,6 +271,29 @@ SRTT_analysis <- function(data,
     data_frame_1[indices] <- NA               # REPLACE WITH na
 
     #<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+
+    #   <><><><><><><><><><><><>  NORMALIZE <><><><><><><><><><><><> ----
+
+    if (normalize_when == 3){
+
+      if (normalize_type == 1 | normalize_type == "z_score"){
+
+        data_frame_1 <- scale(data_frame_1)
+
+        data_frame_1 <- as.vector(data_frame_1)
+
+      }
+      else if (normalize_type == 2 | normalize_type == "min_max"){
+
+        data_frame_1 <- (data_frame_1 - min(data_frame_1)) / (max(data_frame_1) - min(data_frame_1))
+
+        data_frame_1 <- as.vector(data_frame_1)
+
+      }
+    }
+
+    #   <><><><><><><><><><><><><><><><><><><><><><><><>
 
 
   }
@@ -265,7 +346,9 @@ SRTT_analysis <- function(data,
 #' @param data Dataframe including participant data, and their ID
 #' @param format How are the data shaped? "Long" or "Wide"
 #' @param unit Unit of the response times, can take either "Seconds" or "Milliseconds"
-#' @param type_of_filtering What type of filtering do you want to apply?  "Fixed_Window" only applies a fixed window type, instead, "Rolling_Standard_Deviation", first applies a fixed windown and then a rolling window
+#' @param normalize_when Do you want to normalize the data? 0 = no normalization; 1 = before the fixed_boundary filtering or before rolling filtering; 2 = after fixed_boundary filtering but before rolling filtering;  3 = after fixed_boundary filtering and after rolling filtering
+#' @param normalize_type What type of normalization do you want on the data? 1 or "z_score" = Z-scoring; 2 or "min_max" = Min Max scaling
+#' @param type_of_filtering What type of filtering do you want to apply?  "Fixed_Window" only applies a fixed window type, instead, "Rolling_Standard_Deviation", only applies a rolling window "Fixed_and_Rolling", first applies a fixed window and then a rolling window
 #' @param lower_boundary_fixed_filtering_milliseconds During the 'Fixed_Window' filtering what is the lower boundary (in milliseconds)? Enter an integer
 #' @param upper_boundary_fixed_filtering_milliseconds During the 'Fixed_Window' filtering what is the upper boundary (in milliseconds)? Enter an integer
 #' @param standard_deviations During the 'Rolling_Standard_Deviation' filtering, how many standard deviations from the mean do you want to filter? Enter a numeric value > 1
@@ -283,7 +366,9 @@ SRTT_analysis <- function(data,
 SRTT_analysis_for_Dataframes <- function(data,
                                          format = "Long",
                                          unit = "Seconds",
-                                         type_of_filtering = "Rolling_Standard_Deviation",
+                                         normalize_when = 0,
+                                         normalize_type = normalize_type,
+                                         type_of_filtering = "Fixed_and_Rolling",
                                          lower_boundary_fixed_filtering_milliseconds = 200,
                                          upper_boundary_fixed_filtering_milliseconds = 2000,
                                          standard_deviations = 2,
@@ -303,6 +388,8 @@ SRTT_analysis_for_Dataframes <- function(data,
       new <- rbind(new, SRTT_analysis(data[i, ],
                                       format = format,
                                       unit = unit,
+                                      normalize_when = normalize_when,
+                                      normalize_type = normalize_type,
                                       type_of_filtering = type_of_filtering,
                                       lower_boundary_fixed_filtering_milliseconds = lower_boundary_fixed_filtering_milliseconds,
                                       upper_boundary_fixed_filtering_milliseconds = upper_boundary_fixed_filtering_milliseconds,
@@ -322,6 +409,8 @@ SRTT_analysis_for_Dataframes <- function(data,
       new <- rbind(new, SRTT_analysis(data[, i],
                                       format = format,
                                       unit = unit,
+                                      normalize_when = normalize_when,
+                                      normalize_type = normalize_type,
                                       type_of_filtering = type_of_filtering,
                                       lower_boundary_fixed_filtering_milliseconds = lower_boundary_fixed_filtering_milliseconds,
                                       upper_boundary_fixed_filtering_milliseconds = upper_boundary_fixed_filtering_milliseconds,
