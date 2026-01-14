@@ -56,7 +56,7 @@ The default value is 2 standard deviation and a window size of ~2.5\% of the tot
 # Basic usage
 ID <- LETTERS[1:5]
 dataframe_wide <- data.frame(ID = ID, matrix(stats::rnorm(5 * 500, mean = 1, sd = 0.1), nrow = 5, ncol = 500) )
-head(SRTT_analysis_for_Dataframes(dataframe_wide, format = "Wide")[, 1:10])
+head(SRTT_analysis_for_Dataframes(dataframe_wide, format = "Wide", normalize_when = 3, normalize_type = "min_max", type_of_filtering = "Rolling_Standard_Deviation")[, 1:10])
 
 dataframe_long <- as.data.frame(t(dataframe_wide))
 head(SRTT_analysis_for_Dataframes(dataframe_long, format = "Long" ,running_window_width_percentage = 0.3)[, 1:10])

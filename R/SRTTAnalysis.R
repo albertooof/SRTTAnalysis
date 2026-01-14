@@ -26,21 +26,28 @@
 #' @examples
 #' # Basic usage
 #' data_wide <- data.frame(id = 999, t(rnorm(500, mean = 1, sd = 0.1)))
-#' head(SRTT_analysis(data_wide, format = "Wide")[, 1:10])
+#' head(SRTT_analysis(data_wide, format = "Wide",  normalize_when = 2, normalize_type = "min_max")[, 1:10])
 #'
 #' data_long <- data.frame(value = c(999, rnorm(500, mean = 1, sd = 0.1)))
-#' head(SRTT_analysis(data_long, format = "Long")[, 1:10])
+#' head(SRTT_analysis(data_long, format = "Long",  normalize_when = 1, normalize_type = "z_score", lower_boundary_fixed_filtering_milliseconds = -2, upper_boundary_fixed_filtering_milliseconds = 2)[, 1:10])
 SRTT_analysis <- function(data,
-                          format = "Long",
-                          unit = "Seconds",
-                          normalize_when = 0,
-                          normalize_type = normalize_type,
-                          type_of_filtering = "Fixed_and_Rolling",
-                          lower_boundary_fixed_filtering_milliseconds = 200,
-                          upper_boundary_fixed_filtering_milliseconds = 2000,
-                          standard_deviations = 2,
-                          running_window_width_percentage = 0.025
+                         format = "Long",
+                         unit = "Seconds",
+                         normalize_when = 0,
+                         normalize_type = normalize_type,
+                         type_of_filtering = "Fixed_and_Rolling",
+                         lower_boundary_fixed_filtering_milliseconds = 200,
+                         upper_boundary_fixed_filtering_milliseconds = 2000,
+                         standard_deviations = 2,
+                         running_window_width_percentage = 0.025
                           ){
+
+  # Validate normalize_when and type_of_filtering combination
+  if (normalize_when == 2 && type_of_filtering != "Fixed_and_Rolling") {
+    stop("normalize_when = 2 can only be used with type_of_filtering = 'Fixed_and_Rolling'")
+  }
+
+
 
   # Initialize empty data frames
   df_1 <- NULL
@@ -58,9 +65,9 @@ SRTT_analysis <- function(data,
     data <- subset(data, select=-ID)
 
     data <- tidyr::pivot_longer(data,
-                         cols=1:ncol((data)),
-                         names_to='var',
-                         values_to='ResponseTime')
+                                cols=1:ncol((data)),
+                                names_to='var',
+                                values_to='ResponseTime')
 
     data <- subset(data, select=-var)
 
@@ -123,7 +130,7 @@ SRTT_analysis <- function(data,
   }
 
   # ----
-  #   <><><><><><><><><><><><>  NORMALIZE <><><><><><><><><><><><> ----
+  #   <><><><><><><><><><><><>  NORMALIZE == 1 <><><><><><><><><><><><> ----
 
   if (normalize_when == 0 ){
 
@@ -131,7 +138,7 @@ SRTT_analysis <- function(data,
 
   }
 
-  else if (normalize_when == 1){
+  if (normalize_when == 1){
 
     if (normalize_type == 1 | normalize_type == "z_score"){
 
@@ -142,7 +149,7 @@ SRTT_analysis <- function(data,
     }
     else if (normalize_type == 2 | normalize_type == "min_max"){
 
-      data_frame <- (data_frame - min(data_frame)) / (max(data_frame) - min(data_frame))
+      data_frame <- (data_frame - min(data_frame, na.rm = T)) / (max(data_frame, na.rm = T) - min(data_frame, na.rm = T))
 
       data_frame <- as.vector(data_frame)
 
@@ -228,7 +235,7 @@ SRTT_analysis <- function(data,
 
 
 
-    #   <><><><><><><><><><><><>  NORMALIZE <><><><><><><><><><><><>
+    #   <><><><><><><><><><><><>  NORMALIZE == 2 <><><><><><><><><><><><>
 
     if (normalize_when == 2){
 
@@ -241,7 +248,7 @@ SRTT_analysis <- function(data,
       }
       else if (normalize_type == 2 | normalize_type == "min_max"){
 
-        data_frame_1 <- (data_frame_1 - min(data_frame_1)) / (max(data_frame_1) - min(data_frame_1))
+        data_frame_1 <- (data_frame_1 - min(data_frame_1, na.rm = T)) / (max(data_frame_1, na.rm = T) - min(data_frame_1, na.rm = T))
 
         data_frame_1 <- as.vector(data_frame_1)
 
@@ -270,33 +277,34 @@ SRTT_analysis <- function(data,
     indices <- base::which(filter_aa == FALSE)                                    # FIND INDEXES
     data_frame_1[indices] <- NA               # REPLACE WITH na
 
-    #<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
-
-
-    #   <><><><><><><><><><><><>  NORMALIZE <><><><><><><><><><><><> ----
-
-    if (normalize_when == 3){
-
-      if (normalize_type == 1 | normalize_type == "z_score"){
-
-        data_frame_1 <- scale(data_frame_1)
-
-        data_frame_1 <- as.vector(data_frame_1)
-
-      }
-      else if (normalize_type == 2 | normalize_type == "min_max"){
-
-        data_frame_1 <- (data_frame_1 - min(data_frame_1)) / (max(data_frame_1) - min(data_frame_1))
-
-        data_frame_1 <- as.vector(data_frame_1)
-
-      }
-    }
-
-    #   <><><><><><><><><><><><><><><><><><><><><><><><>
-
 
   }
+
+  #<><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
+  # ----
+
+  #   <><><><><><><><><><><><>  NORMALIZE == 3 <><><><><><><><><><><><> ----
+
+  if (normalize_when == 3){
+
+    if (normalize_type == 1 | normalize_type == "z_score"){
+
+      data_frame_1 <- scale(data_frame_1)
+
+      data_frame_1 <- as.vector(data_frame_1)
+
+    }
+    else if (normalize_type == 2 | normalize_type == "min_max"){
+
+      data_frame_1 <- (data_frame_1 - min(data_frame_1, na.rm = T)) / (max(data_frame_1, na.rm = T) - min(data_frame_1, na.rm = T))
+
+      data_frame_1 <- as.vector(data_frame_1)
+
+    }
+  }
+
+  #   <><><><><><><><><><><><><><><><><><><><><><><><>
 
   # ----
   #   <><><><><><><><><><><><>    POST-FILTERING   <><><><><><><><><><><><> ----
@@ -359,7 +367,7 @@ SRTT_analysis <- function(data,
 #' # Basic usage
 #' ID <- LETTERS[1:5]
 #' dataframe_wide <- data.frame(ID = ID, matrix(stats::rnorm(5 * 500, mean = 1, sd = 0.1), nrow = 5, ncol = 500) )
-#' head(SRTT_analysis_for_Dataframes(dataframe_wide, format = "Wide")[, 1:10])
+#' head(SRTT_analysis_for_Dataframes(dataframe_wide, format = "Wide", normalize_when = 3, normalize_type = "min_max", type_of_filtering = "Rolling_Standard_Deviation")[, 1:10])
 #'
 #' dataframe_long <- as.data.frame(t(dataframe_wide))
 #' head(SRTT_analysis_for_Dataframes(dataframe_long, format = "Long" ,running_window_width_percentage = 0.3)[, 1:10])

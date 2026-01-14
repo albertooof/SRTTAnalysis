@@ -57,8 +57,8 @@ The default value is 2 standard deviation and a window size of ~2.5\% of the tot
 \examples{
 # Basic usage
 data_wide <- data.frame(id = 999, t(rnorm(500, mean = 1, sd = 0.1)))
-head(SRTT_analysis(data_wide, format = "Wide")[, 1:10])
+head(SRTT_analysis(data_wide, format = "Wide",  normalize_when = 2, normalize_type = "min_max")[, 1:10])
 
 data_long <- data.frame(value = c(999, rnorm(500, mean = 1, sd = 0.1)))
-head(SRTT_analysis(data_long, format = "Long")[, 1:10])
+head(SRTT_analysis(data_long, format = "Long",  normalize_when = 1, normalize_type = "z_score", lower_boundary_fixed_filtering_milliseconds = -2, upper_boundary_fixed_filtering_milliseconds = 2)[, 1:10])
 }
